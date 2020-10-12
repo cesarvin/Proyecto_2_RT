@@ -7,7 +7,8 @@ wall = Material(diffuse = color( 0.49, 0.67, 0.48 ), spec = 16)
 roof = Material(diffuse= color( 0.66, 0.84, 0.67 ), spec = 16)
 floor = Material(diffuse = color(0.4, 0.35, 0.35 ), spec = 16)
 cubo = Material(diffuse = color(0.4, 0.69, 0.8 ), spec = 32)
-reflexion = Material(spec = 64, matType = REFLECTIVE)
+reflexion = Material(spec = 16, matType = REFLECTIVE)
+refraxion = Material(spec = 16, ior = 2, matType= TRANSPARENT) 
 
 width = 500 
 height = 500
@@ -16,10 +17,10 @@ r.glClearColor(0.2, 0.6, 0.8)
 r.glClear()
 
 
-r.envmap = Envmap('vacourtyard.bmp')
-#r.envmap = Envmap('starmap.bmp')
+r.envmap = Envmap('street.bmp')
+#r.envmap = Envmap('vacourtyard.bmp')
 
-r.pointLight = PointLight(position = V3(1,1,3), intensity = 0.75)
+r.pointLight = PointLight(position = V3(5,1,3), intensity = 0.75)
 r.ambientLight = AmbientLight(strength = 0.1)
 
 print('\nThis render gonna be legen—\n')
@@ -35,7 +36,8 @@ print('\nThis render gonna be legen—\n')
 # r.scene.append( AABB(V3(0, -2.1, -10), 1.5, cubo ) )
 # r.scene.append( AABB(V3(1.3, 1.8, -7), 0.75, cubo ) )
 
-r.scene.append( AABB(V3(1.5, -1.5, -5), 1.5, reflexion ) )
+r.scene.append( AABB(V3(1.5, 1.5, -10), 2, reflexion ) )
+r.scene.append( AABB(V3(-1.5, 1.5, -10),2, refraxion ) )
 
 r.rtRender()
 
