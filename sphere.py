@@ -13,6 +13,13 @@ class AmbientLight(object):
         self.strength = strength
         self.color = _color
 
+class DirectionalLight(object):
+    def __init__(self, direction = V3(0,-1,0), _color = WHITE, intensity = 1):
+        self.direction_norm = vectNormal(direction)
+        self.direction = V3(direction.x / self.direction_norm, direction.y / self.direction_norm, direction.z / self.direction_norm)
+        self.intensity = intensity
+        self.color = _color
+
 class PointLight(object):
     def __init__(self, position = V3(0,0,0), _color = WHITE, intensity = 1):
         self.position = position
@@ -115,16 +122,18 @@ class AABB(object):
         self.material = material
         self.planes = []
 
-        halfSize = size / 2
+        halfSizeX = size.x / 2
+        halfSizeY = size.y / 2
+        halfSizeZ = size.z / 2
 
-        self.planes.append( Plane( vectAdd(position, V3(halfSize,0,0)), V3(1,0,0), material))
-        self.planes.append( Plane( vectAdd(position, V3(-halfSize,0,0)), V3(-1,0,0), material))
+        self.planes.append( Plane( vectAdd(position, V3(halfSizeX,0,0)), V3(1,0,0), material))
+        self.planes.append( Plane( vectAdd(position, V3(-halfSizeX,0,0)), V3(-1,0,0), material))
 
-        self.planes.append( Plane( vectAdd(position, V3(0,halfSize,0)), V3(0,1,0), material))
-        self.planes.append( Plane( vectAdd(position, V3(0,-halfSize,0)), V3(0,-1,0), material))
+        self.planes.append( Plane( vectAdd(position, V3(0,halfSizeY,0)), V3(0,1,0), material))
+        self.planes.append( Plane( vectAdd(position, V3(0,-halfSizeY,0)), V3(0,-1,0), material))
 
-        self.planes.append( Plane( vectAdd(position, V3(0,0,halfSize)), V3(0,0,1), material))
-        self.planes.append( Plane( vectAdd(position, V3(0,0,-halfSize)), V3(0,0,-1), material))
+        self.planes.append( Plane( vectAdd(position, V3(0,0,halfSizeZ)), V3(0,0,1), material))
+        self.planes.append( Plane( vectAdd(position, V3(0,0,-halfSizeZ)), V3(0,0,-1), material))
 
 
     def ray_intersect(self, orig, dir):
@@ -135,8 +144,8 @@ class AABB(object):
         boundsMax = [0,0,0]
 
         for i in range(3):
-            boundsMin[i] = self.position[i] - (epsilon + self.size / 2)
-            boundsMax[i] = self.position[i] + (epsilon + self.size / 2)
+            boundsMin[i] = self.position[i] - (epsilon + self.size[i] / 2)
+            boundsMax[i] = self.position[i] + (epsilon + self.size[i] / 2)
 
         t = float('inf')
         intersect = None

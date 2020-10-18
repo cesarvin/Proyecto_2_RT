@@ -7,37 +7,37 @@ wall = Material(diffuse = color( 0.49, 0.67, 0.48 ), spec = 16)
 roof = Material(diffuse= color( 0.66, 0.84, 0.67 ), spec = 16)
 floor = Material(diffuse = color(0.4, 0.35, 0.35 ), spec = 16)
 cubo = Material(diffuse = color(0.4, 0.69, 0.8 ), spec = 32)
-reflexion = Material(spec = 16, matType = REFLECTIVE)
-refraxion = Material(spec = 16, ior = 2, matType= TRANSPARENT) 
+reflexion = Material(spec = 64, matType = REFLECTIVE)
+refraxion = Material(spec = 64, ior = 2.5, matType= TRANSPARENT) 
 
-width = 500 
+width = 1000 
 height = 500
 r = Raytracer(width,height)
 r.glClearColor(0.2, 0.6, 0.8)
-r.glClear()
+#r.glClear()
 
 
 r.envmap = Envmap('street.bmp')
-#r.envmap = Envmap('vacourtyard.bmp')
+#r.envmap = Envmap('envmap.bmp')
 
-r.pointLight = PointLight(position = V3(5,1,3), intensity = 0.75)
+#r.pointLight = PointLight(position = V3(5,1,3), intensity = 0.75)
+r.pointLights.append( PointLight(position = V3(-4,4,0), intensity = 0.5))
+r.pointLights.append( PointLight(position = V3( 4,0,0), intensity = 0.5))
+r.dirLight = DirectionalLight(direction = V3(1, -1, -2), intensity = 0.2)
 r.ambientLight = AmbientLight(strength = 0.1)
 
 print('\nThis render gonna be legen—\n')
 
 # # cuarto
-# r.scene.append( Plane( V3(0,-15,0), V3(0,1,0), floor))
-# r.scene.append( Plane( V3(0,15,0), V3(0,-1,0), roof))
-# r.scene.append( Plane( V3(-15,0,0), V3(1,0,0), wall))
-# r.scene.append( Plane( V3(15,0,0), V3(-1,0,0), wall))
-# r.scene.append( Plane( V3(0,0,-45), V3(0,0,1), wall))
+r.scene.append( AABB(V3(-6, -3.5, -10), V3(3, 0.1, 5) , wall ) )
+r.scene.append( AABB(V3(-7.5, -2.3, -10), V3(0.1, 2.5, 5) , wall ) )
+r.scene.append( AABB(V3(-4.5, -2.3, -10), V3(0.1, 2.5, 5) , wall ) )
+r.scene.append( AABB(V3(-6, -2.3, -7.4), V3(3, 2.5, 0.1) , wall ) )
+r.scene.append( AABB(V3(-6, -2.3, -12.6), V3(3, 2.5, 0.1) , wall ) )
 
-# # cubos
-# r.scene.append( AABB(V3(0, -2.1, -10), 1.5, cubo ) )
-# r.scene.append( AABB(V3(1.3, 1.8, -7), 0.75, cubo ) )
 
-r.scene.append( AABB(V3(1.5, 1.5, -10), 2, reflexion ) )
-r.scene.append( AABB(V3(-1.5, 1.5, -10),2, refraxion ) )
+r.scene.append( Sphere(V3(-1.5, -1, -10), 1, reflexion) )
+r.scene.append( Sphere(V3(1.5, -1, -10), 1, refraxion) )
 
 r.rtRender()
 
