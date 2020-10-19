@@ -48,16 +48,16 @@ r.scene.append( AABB(V3(8.5, 9.9, -13), V3(0.05, 15, 3.9) , newsp ) )
 r.scene.append( AABB(V3(-7.7, 5, -20), V3(0.05, 15, 20) , graffiti ) )
 
 # # Esferas 
-# r.scene.append( Sphere(V3(10, -6, -30), 3, reflexion) )
-# r.scene.append( Sphere(V3(10, -6, -15), 3, refraxion) )
+r.scene.append( Sphere(V3(10, -6, -25), 3, reflexion) )
+r.scene.append( Sphere(V3(10, -6, -15), 3, refraxion) )
 
 # cajas
 r.scene.append( AABB(V3(-6, -1.5, -10), V3(2, 2, 2), caja ) )
 r.scene.append( AABB(V3(5, -3, -25), V3(5, 5, 5), caja2 ) )
 r.scene.append( AABB(V3(5, 0.5, -25), V3(2, 2, 2), caja3 ) )
 r.scene.append( AABB(V3(-6, -3, -50), V3(10, 10, 10), caja2 ) )
-# r.scene.append( AABB(V3(0, -2.1, -30), V3(1, 1, 1), caja2 ) )
-# r.scene.append( AABB(V3(0, -2.1, -35), V3(1, 1, 1), caja3 ) )
+r.scene.append( AABB(V3(0, -3, -7), V3(1, 1, 1), caja2 ) )
+r.scene.append( AABB(V3(0, -3, -10), V3(1, 1, 1), caja3 ) )
 
 r.rtRender()
 

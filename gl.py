@@ -463,11 +463,11 @@ class Raytracer(object):
                                      intensity * pointLight.color[0] / 255)                                     
 
             # Iluminacion especular
-            reflect = reflectVector(V3(intersect.normal[0], intersect.normal[1], intersect.normal[2]), V3(light_dir[0], light_dir[1], light_dir[2])) # Reflejar el vector de luz
+            reflect = reflectVector(V3(intersect.normal[0], intersect.normal[1], intersect.normal[2]), light_dir) # Reflejar el vector de luz
 
             # spec_intensity: lightIntensity * ( view_dir dot reflect) ** especularidad
             
-            spec_intensity = pointLight.intensity * (max(0, vectDot(V3(view_dir[0],view_dir[1], view_dir[2]), reflect)) ** material.spec)
+            spec_intensity = pointLight.intensity * (max(0, vectDot(view_dir, reflect)) ** material.spec)
 
             specColor = V3(spec_intensity * pointLight.color[2] / 255,
                                   spec_intensity * pointLight.color[1] / 255,
@@ -493,7 +493,7 @@ class Raytracer(object):
                     # finalColor *= np.array([texColor[2] / 255,
                     #                         texColor[1] / 255,
                     #                         texColor[0] / 255])
-                    finalColor = V3((finalColor.x * texColor[2]) / 255, (finalColor.y * texColor[2])/255, (finalColor.z * texColor[2])/255)
+                    finalColor = V3((finalColor.x * texColor[0]) / 255, (finalColor.y * texColor[1])/255, (finalColor.z * texColor[2])/255)
                 # Formula de iluminacion, PHONG
                 # finalColor = V3((ambientColor.x + dirLightColor.x + pLightColor.x), 
                 #                 (ambientColor.y + dirLightColor.y + pLightColor.y),
@@ -551,10 +551,7 @@ class Raytracer(object):
         g = min(1,finalColor.y)
         b = min(1,finalColor.z)
 
-        return color(r, g, b)
-
-
-                
+        return color(r, g, b)            
 
 
 

@@ -2,6 +2,9 @@ import numpy as np
 from gl import color, V3, V4
 from gl_aux import *
 
+from numpy import arccos, arctan2
+
+
 OPAQUE = 0
 REFLECTIVE = 1
 TRANSPARENT = 2
