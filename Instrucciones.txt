@@ -1,0 +1,1 @@
+Ejecutar el archivo proyecto.py para generar la imagen proyecto.bmp

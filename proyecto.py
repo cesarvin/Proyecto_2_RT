@@ -4,7 +4,7 @@ from sphere import *
 import random
 
 basurero = Material(diffuse = color( 0.49, 0.67, 0.48 ), spec = 16)
-caja = Material(diffuse= color( 0.62, 0, 0.68 ),texture = Texture('box.bmp'), matType = OPAQUE)
+caja = Material(diffuse= color( 0.4, 0, 0.49 ),texture = Texture('box.bmp'), matType = OPAQUE)
 caja1 = Material(diffuse= color( 0.66, 0.84, 0.67 ),texture = Texture('box.bmp'), spec = 16)
 caja2 = Material(diffuse = color(0.4, 0.35, 0.35 ),texture = Texture('box.bmp'), spec = 16)
 caja3 = Material(diffuse = color(0.4, 0.69, 0.8 ),texture = Texture('box.bmp'), spec = 32)
@@ -13,16 +13,12 @@ graffiti = Material(texture = Texture('graffiti.bmp'), spec = 32)
 reflexion = Material(spec = 64, matType = REFLECTIVE)
 refraxion = Material(spec = 64, ior = 2.5, matType= TRANSPARENT) 
 
-
-
-
 width = 500
 height = 250
 r = Raytracer(width,height)
 r.glClearColor(0.2, 0.6, 0.8)
 r.glClear()
 
-#r.envmap = Envmap('envmap.bmp')
 r.envmap = Envmap('street.bmp')
 
 print('\nThis render gonna be legen—\n')
@@ -44,11 +40,11 @@ r.scene.append( AABB(V3(7.7, 10, -25), V3(0.05, 15, 4.5) , newsp ) )
 r.scene.append( AABB(V3(8.1, 10, -18), V3(0.05, 15, 5.1) , newsp) )
 r.scene.append( AABB(V3(8.5, 9.9, -13), V3(0.05, 15, 3.9) , newsp ) )
 
-#grafitty
-r.scene.append( AABB(V3(-7.7, 5, -20), V3(0.05, 15, 20) , graffiti ) )
+# # grafitty
+r.scene.append( AABB(V3(-8.6, 6, -20), V3(0.05, 20, 20) , graffiti ) )
 
 # # Esferas 
-r.scene.append( Sphere(V3(10, -6, -25), 3, reflexion) )
+r.scene.append( Sphere(V3(3, -6, -15), 3, reflexion) )
 r.scene.append( Sphere(V3(10, -6, -15), 3, refraxion) )
 
 # cajas
@@ -56,8 +52,8 @@ r.scene.append( AABB(V3(-6, -1.5, -10), V3(2, 2, 2), caja ) )
 r.scene.append( AABB(V3(5, -3, -25), V3(5, 5, 5), caja2 ) )
 r.scene.append( AABB(V3(5, 0.5, -25), V3(2, 2, 2), caja3 ) )
 r.scene.append( AABB(V3(-6, -3, -50), V3(10, 10, 10), caja2 ) )
-r.scene.append( AABB(V3(0, -3, -7), V3(1, 1, 1), caja2 ) )
-r.scene.append( AABB(V3(0, -3, -10), V3(1, 1, 1), caja3 ) )
+r.scene.append( AABB(V3(-2.5, -3, -7), V3(1, 1, 1), caja2 ) )
+r.scene.append( AABB(V3(-1, -3, -10), V3(1, 1, 1), caja3 ) )
 
 r.rtRender()
 
