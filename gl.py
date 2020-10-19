@@ -335,7 +335,7 @@ class Raytracer(object):
             intensity = self.pointLight.intensity * max(0, vectDot(light_dir, intersect.normal))
             diffuseColor = V3(intensity * self.pointLight.color[2] / 255,
                                      intensity * self.pointLight.color[1] / 255,
-                                     intensity * self.pointLight.color[2] / 255)                                     
+                                     intensity * self.pointLight.color[0] / 255)                                     
 
             # Iluminacion especular
             view_dir = vectSubtract(self.camPosition, intersect.point)
@@ -422,7 +422,7 @@ class Raytracer(object):
             #                          intensity * self.dirLight.color[2] / 255])
             diffuseColor = V3(intensity * self.dirLight.color[2] / 255,
                                      intensity * self.dirLight.color[1] / 255,
-                                     intensity * self.dirLight.color[2] / 255)
+                                     intensity * self.dirLight.color[0] / 255)
 
             # Iluminacion especular
             reflect = reflectVector(V3(intersect.normal[0],intersect.normal[1],intersect.normal[2]), light_dir) # Reflejar el vector de luz
@@ -460,7 +460,7 @@ class Raytracer(object):
             intensity = pointLight.intensity * max(0, vectDot(light_dir, V3(intersect.normal[0],intersect.normal[1],intersect.normal[2])))
             diffuseColor = V3(intensity * pointLight.color[2] / 255,
                                      intensity * pointLight.color[1] / 255,
-                                     intensity * pointLight.color[2] / 255)                                     
+                                     intensity * pointLight.color[0] / 255)                                     
 
             # Iluminacion especular
             reflect = reflectVector(V3(intersect.normal[0], intersect.normal[1], intersect.normal[2]), V3(light_dir[0], light_dir[1], light_dir[2])) # Reflejar el vector de luz
@@ -482,10 +482,22 @@ class Raytracer(object):
             pLightColor = vectAdd( pLightColor, V3((1 - shadow_intensity) * (diffuseColor.x + specColor.x), (1 - shadow_intensity) * (diffuseColor.y + specColor.y), (1 - shadow_intensity) * (diffuseColor.z + specColor.z)))
         
             if material.matType == OPAQUE:
+
                 # Formula de iluminacion, PHONG
-                finalColor = V3((ambientColor.x + dirLightColor.x + pLightColor.x), 
-                                (ambientColor.y + dirLightColor.y + pLightColor.y),
-                                (ambientColor.z + dirLightColor.z + pLightColor.z))
+                finalColor = V3(ambientColor.x + dirLightColor.x + pLightColor.x, ambientColor.y + dirLightColor.y + pLightColor.y, ambientColor.z + dirLightColor.z + pLightColor.z)
+
+                if material.texture and intersect.texCoords:
+
+                    texColor = material.texture.getColor(intersect.texCoords[0], intersect.texCoords[1])
+
+                    # finalColor *= np.array([texColor[2] / 255,
+                    #                         texColor[1] / 255,
+                    #                         texColor[0] / 255])
+                    finalColor = V3((finalColor.x * texColor[2]) / 255, (finalColor.y * texColor[2])/255, (finalColor.z * texColor[2])/255)
+                # Formula de iluminacion, PHONG
+                # finalColor = V3((ambientColor.x + dirLightColor.x + pLightColor.x), 
+                #                 (ambientColor.y + dirLightColor.y + pLightColor.y),
+                #                 (ambientColor.z + dirLightColor.z + pLightColor.z))
 
                 # finalColor = V3((ambientColor.x + (1 - shadow_intensity) * (diffuseColor.x + specColor.x)), 
                                 # (ambientColor.y + (1 - shadow_intensity) * (diffuseColor.y + specColor.y)),

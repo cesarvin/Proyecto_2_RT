@@ -27,18 +27,23 @@ class PointLight(object):
         self.color = _color
 
 class Material(object):
-    def __init__(self, diffuse = WHITE, spec = 0, ior = 1, matType = OPAQUE):
+    def __init__(self, diffuse = WHITE, spec = 0, ior = 1, texture = None, matType = OPAQUE):
+        # self, diffuse = WHITE, spec = 0, ior = 1, texture = None, matType = OPAQUE)
         self.diffuse = diffuse
         self.spec = spec
         
         self.matType = matType
         self.ior = ior
 
+        self.texture = texture
+
 class Intersect(object):
-    def __init__(self, distance, point, normal, sceneObject):
+    def __init__(self, distance, point, normal, texCoords, sceneObject):
+        # self, distance, point, normal, texCoords, sceneObject
         self.distance = distance
         self.point = point
         self.normal = normal
+        self.texCoords = texCoords
         self.sceneObject = sceneObject
 
 class Sphere(object):
@@ -83,31 +88,41 @@ class Sphere(object):
         norm_normal = vectNormal(norm)
         norm = V3(norm.x / norm_normal, norm.y / norm_normal, norm.z / norm_normal)
 
+        u = 1 - (arctan2( norm.z, norm.x) / (2 * np.pi) + 0.5)
+        v =  arccos(-norm.y) / np.pi
+
+        uvs = [u, v]
+
         return Intersect(distance = t0,
                          point = hit,
                          normal = norm,
+                         texCoords = uvs,
                          sceneObject = self)
 
 class Plane(object):
     def __init__(self, position, normal, material):
         self.position = position
-        self.normal = normal / np.linalg.norm(normal)
+        normal_norm = vectNormal(normal)
+        self.normal = V3(normal.x / normal_norm, normal.y / normal_norm, normal.z / normal_norm)
+        # self.normal = normal / np.linalg.norm(normal)
         self.material = material
 
     def ray_intersect(self, orig, dir):
         # t = (( position - origRayo) dot normal) / (dirRayo dot normal)
 
-        denom = np.dot(dir, self.normal)
+        denom = vectDot(dir, self.normal)
 
         if abs(denom) > 0.0001:
-            t = np.dot(self.normal, np.subtract(self.position, orig)) / denom
+            t = vectDot(self.normal, vectSubtract(self.position, orig)) / denom
             if t > 0:
                 # P = O + tD
-                hit = np.add(orig, t * np.array(dir))
+                #hit = np.add(orig, t * np.array(dir))
+                hit = vectAdd(orig, V3(t * dir.x, t * dir.y, t * dir.z))
 
                 return Intersect(distance = t,
                                  point = hit,
                                  normal = self.normal,
+                                 texCoords = None,
                                  sceneObject = self)
 
         return None
@@ -149,6 +164,7 @@ class AABB(object):
 
         t = float('inf')
         intersect = None
+        uvs = None
 
         for plane in self.planes:
             planeInter = plane.ray_intersect(orig, dir)
@@ -163,10 +179,28 @@ class AABB(object):
                                 t = planeInter.distance
                                 intersect = planeInter
 
+                                if abs(plane.normal[0]) > 0:
+                                    # mapear uvs para eje x. Uso coordenadas en Y y Z.
+                                    u = (planeInter.point [1] - boundsMin[1]) / (boundsMax[1] - boundsMin[1])
+                                    v = (planeInter.point [2] - boundsMin[2]) / (boundsMax[2] - boundsMin[2])
+
+                                elif abs(plane.normal[1]) > 0:
+                                    # mapear uvs para eje y. Uso coordenadas en X y Z.
+                                    u = (planeInter.point [0] - boundsMin[0]) / (boundsMax[0] - boundsMin[0])
+                                    v = (planeInter.point [2] - boundsMin[2]) / (boundsMax[2] - boundsMin[2])
+
+                                elif abs(plane.normal[2]) > 0:
+                                    # mapear uvs para eje Z. Uso coordenadas en X y Y.
+                                    u = (planeInter.point [0] - boundsMin[0]) / (boundsMax[0] - boundsMin[0])
+                                    v = (planeInter.point [1] - boundsMin[1]) / (boundsMax[1] - boundsMin[1])
+
+                                uvs = [u, v]
+
         if intersect is None:
             return None
 
         return Intersect(distance = intersect.distance,
                          point = intersect.point,
                          normal = intersect.normal,
+                         texCoords = uvs,
                          sceneObject = self)
